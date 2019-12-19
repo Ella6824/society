@@ -4,6 +4,7 @@ import life.ella.society.dto.PaginationDTO;
 import life.ella.society.dto.QuestionDTO;
 import life.ella.society.exception.CustomizeErrorCode;
 import life.ella.society.exception.CustomizeException;
+import life.ella.society.mapper.QuestionExtMapper;
 import life.ella.society.mapper.QuestionMapper;
 import life.ella.society.mapper.UserMapper;
 import life.ella.society.model.Question;
@@ -22,6 +23,9 @@ public class QuestionService {
 
     @Autowired
     private QuestionMapper questionMapper;
+
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
 
     @Autowired
     private UserMapper userMapper;
@@ -125,5 +129,12 @@ public class QuestionService {
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
         }
+    }
+
+    public void incView(Integer id) {
+        Question question = new Question();
+        question.setId(id);
+        question.setViewCount(1);
+        questionExtMapper.incView(question);
     }
 }
