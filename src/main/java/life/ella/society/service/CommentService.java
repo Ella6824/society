@@ -10,6 +10,7 @@ import life.ella.society.model.Comment;
 import life.ella.society.model.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CommentService {
@@ -23,6 +24,7 @@ public class CommentService {
     @Autowired
     private QuestionExtMapper questionExtMapper;
 
+    @Transactional
     public void insert(Comment comment) {
         if(comment.getParentId()==null||comment.getParentId()==0){
             throw new CustomizeException(CustomizeErrorCode.TARGET_PARAM_NOT_FOUND);
@@ -40,7 +42,13 @@ public class CommentService {
             }
             commentMapper.insert(comment);
         }else{
-           //questionMapper.selectByPrimaryKey(comment.getParentId());
+           Question question=questionMapper.selectByPrimaryKey(comment.getParentId());
+           if(question==null){
+               throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+           }
+           commentMapper.insert(comment);
+            question.setCommentCount(1);
+            questionExtMapper.incCommentCount(question);
         }
     }
 }
