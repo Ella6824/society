@@ -1,6 +1,6 @@
 package life.ella.society.Controller;
 
-import life.ella.society.dto.CommentDTO;
+import life.ella.society.dto.CommentCreateDTO;
 import life.ella.society.dto.ResultDTO;
 import life.ella.society.exception.CustomizeErrorCode;
 import life.ella.society.mapper.CommentMapper;
@@ -15,21 +15,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 public class CommentController {
-
-    @Autowired
-    private CommentMapper commentMapper;
 
     @Autowired
     private CommentService commentService;
 
     @ResponseBody
     @RequestMapping(value="/comment",method= RequestMethod.POST)
-    public Object post(@RequestBody CommentDTO commentDTO,
+    public Object post(@RequestBody CommentCreateDTO commentCreateDTO,
                        HttpServletRequest request){
         User user = (User)request.getSession().getAttribute("user");
         if(user==null){
@@ -37,9 +32,9 @@ public class CommentController {
         }
 
         Comment comment = new Comment();
-        comment.setParentId(commentDTO.getParentId());
-        comment.setContent(commentDTO.getContent());
-        comment.setType(commentDTO.getType());
+        comment.setParentId(commentCreateDTO.getParentId());
+        comment.setContent(commentCreateDTO.getContent());
+        comment.setType(commentCreateDTO.getType());
         comment.setGmtModified(System.currentTimeMillis());
         comment.setGmtCreate(System.currentTimeMillis());
         comment.setCommentator(user.getId());
